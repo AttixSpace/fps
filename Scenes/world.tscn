@@ -1,0 +1,54 @@
+[gd_scene load_steps=8 format=3 uid="uid://by5rmkpaerd8d"]
+
+[ext_resource type="Texture2D" uid="uid://b066hx5ane45q" path="res://696.jpg" id="1_2h0yt"]
+[ext_resource type="PackedScene" uid="uid://cwoucallakur1" path="res://character.tscn" id="2_vtb53"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_uycdq"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_rub86"]
+sky_material = SubResource("ProceduralSkyMaterial_uycdq")
+
+[sub_resource type="Environment" id="Environment_r47mf"]
+background_mode = 2
+sky = SubResource("Sky_rub86")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wmst4"]
+albedo_texture = ExtResource("1_2h0yt")
+uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gq5jf"]
+size = Vector3(500, 0.2, 500)
+
+[node name="world" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_r47mf")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.701151, 1.47518, 0.00381482)
+material_override = SubResource("StandardMaterial3D_wmst4")
+size = Vector3(500, 0.002, 500)
+
+[node name="RigidBody3D" type="RigidBody3D" parent="CSGBox3D"]
+
+[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="CSGBox3D/RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.168221, -0.0663481, -0.138626)
+polygon = PackedVector2Array(0.238403, -2.2629, 0.238403, -2.2629)
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("2_vtb53")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 4, 13)
+
+[node name="floor" type="Node3D" parent="."]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="floor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="floor/StaticBody3D"]
+shape = SubResource("BoxShape3D_gq5jf")
