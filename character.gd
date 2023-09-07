@@ -15,10 +15,15 @@ var jumps = JUMPCOUNTER
 const BASE_FOV = 75.0
 const FOV_CHANGE = 1.5
 
+var bullet = load("res://Bullet.tscn")
+var instance
+
+
 
 @onready var head = $head
 @onready var camera = $head/Camera3D
-
+@onready var gun_anim = $"head/Camera3D/Assault Rifle/AnimationPlayer"
+@onready var gun_barrel = $"head/Camera3D/Assault Rifle/RayCast3D"
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -70,7 +75,18 @@ func _physics_process(delta):
 	var velocity_clamped = clamp(velocity.length(), 0.5, Sprint_SPEED * 2)
 	var target_fov = BASE_FOV + FOV_CHANGE * velocity_clamped
 	camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
-
+	
+	
+	if Input.is_action_pressed("shoot"):
+		if !gun_anim.is_playing():
+			gun_anim.play("shoot")
+			instance = bullet.instantiate()
+			instance.position = gun_barrel.global_position
+			instance.transform.basis = gun_barrel.global_transform.basis
+			get_parent().add_child(instance)
+	
+	
+	
 	move_and_slide()
 	
 func jumpreset():
